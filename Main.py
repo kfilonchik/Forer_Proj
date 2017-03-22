@@ -1,20 +1,30 @@
-import telebot
+import json
 from random import choice
 import random
-import datetime
 from datetime import date
-
-API_TOKEN = '312164149:AAHGpHx3chsDOQ-dqWwqC_tW-fCf4ukQ6cA'
-bot = telebot.TeleBot(API_TOKEN)
+import datetime
 
 horoscope = {}
+signs = ["Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева","Весы","Скорпион", "Стрелец", "Козерог", "Водолец", "Рыбы"]
 
-def getTextFromHoroscope(sign):
+def get_text_from_horoscope(sign):
+
     d = date.today()
+    if sign not in signs:
+        return TypeError;
+
     if (d, sign) not in horoscope:
         horoscope[(d, sign)] = gen_horoscope()
 
-    return horoscope[(d, sign)]
+
+    data = {}
+    data['sign'] = sign
+    data['date'] = (d.day, d.year)
+    data['text'] = horoscope[(d, sign)]
+
+    json_data = json.dumps(data)
+
+    return json_data
 
 def prepare_horoscope():
     with open('text.txt', encoding='utf-8') as f:
@@ -61,57 +71,4 @@ def gen_horoscope():
     return result
 
 
-def sign_period(ast_sign):
-    periods = {'Овен': '20 марта — 19 апреля','Телец': '20 апреля — 20 мая', 'Близнецы':
-'21 мая — 20 июня','Рак':
-'21 июня — 22 июля', 'Лев':
-'23 июля — 22 августа', 'Дева':
-'23 августа — 22 сентября', 'Весы':
-'23 сентября — 22 октября', 'Скорпион':
-'23 октября — 21 ноября', 'Стрелец':
-'22 ноября — 21 декабря', 'Козерог':
-'22 декабря — 19 января', 'Водолей':
-'21 января — 18 февраля', 'Рыбы':
-'19 февраля — 19 марта'}
-
-
-    get_period = periods[ast_sign]
-    return get_period
-sign = ["Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева","Весы","Скорпион", "Стрелец", "Козерог", "Водолец", "Рыбы"]
-
-# Handle '/start' and '/help'
-@bot.message_handler(commands=['help', 'start'])
-def send_welcome(message):
-        bot.reply_to(message, "Привет! Тебя приветствует известный ученый психолог Форер! Он может предсказать твое будущее! Думаешь компьютеры плохие астрологи? Давай проверим! Хочешь? /Yes")
-
-@bot.message_handler(commands=['No'])
-def no_message(message):
-    bot.send_message(message.chat.id, "Жаль, жаль! Если передумаешь нажимай /Yes, твой Форер")
-@bot.message_handler(commands=['Yes'])
-def yes_message(message):
-        bot.send_message(message.chat.id, "Здорово, напиши нам свой знак зодиака ")
-
-@bot.message_handler(func=lambda message: True)
-def guess_message(message):
-    if message.text in sign:
-        ast_sign = message.text
-        h = getTextFromHoroscope(ast_sign)
-        this_period = sign_period(ast_sign)
-        bot.send_message(message.chat.id,
-                         "Значит так, ты" + " " + ast_sign + "" + "(" + this_period + ")" + "." + " "+ "Вот что говорят о тебе звезды:" + "" + "" + h)
-
-
-    else:
-        if message.text == "Нет" or message.text == "нет" or message.text == "в жопу":
-            bot.send_message(message.chat.id,
-                         "Что ж ты так грубо то...Да бог с тобой! Лучше попробуй заново /start")
-        else:
-            if message.text == "спасибо" or message.text == "круто" or message.text == "класс":
-                bot.send_message(message.chat.id,
-                                 "Я рад, что тебе понравилось, заходи еще завтра, тебя будет ждать свеженький гороскоп:)")
-            else:
-                bot.send_message(message.chat.id,
-                         "Астролог Форер к вашим услугам, чтобы начать нажми /start")
-
-
-bot.polling()
+print(get_text_from_horoscope("Лев"))
