@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Forer.iml" filepath="$PROJECT_DIR$/.idea/Forer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Forer/.idea/Forer_REST_Flask.iml" filepath="$PROJECT_DIR$/../Forer/.idea/Forer_REST_Flask.iml" />
     </modules>
   </component>
 </project>
